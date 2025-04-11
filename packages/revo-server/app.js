@@ -2,6 +2,7 @@
 require('dotenv').config()
 const createError = require('http-errors')
 const express = require('express')
+const auth = require('./middleware/auth')
 const path = require('path')
 
 const fs = require('fs/promises')
@@ -48,7 +49,7 @@ const rangeRouter = require('./routes/range')
 const timeRouter = require('./routes/time')
 const modelRouter = require('./routes/model')
 const vissimRouter = require('./routes/vissim')
-const { router:usersRouter } = require('./routes/users')
+const { router: usersRouter } = require('./routes/users')
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -78,16 +79,25 @@ async function getUser(req, res, next) {
 }
 
 app.use('/auth', authRouter)
-app.use('/draft', getUser, draftRouter)
-app.use('/range', getUser, rangeRouter)
-app.use('/time', getUser, timeRouter)
-app.use('/model', getUser, modelRouter)
-app.use('/vissim', getUser, vissimRouter)
-app.use('/users', getUser, usersRouter)
-app.get('/me', getUser, async (req, res) => {
-  return res.send({
-    user: req.user,
-  })
+// app.use('/draft', getUser, draftRouter)
+// app.use('/range', getUser, rangeRouter)
+// app.use('/time', getUser, timeRouter)
+// app.use('/model', getUser, modelRouter)
+// app.use('/vissim', getUser, vissimRouter)
+// app.use('/users', getUser, usersRouter)
+// app.get('/me', getUser, async (req, res) => {
+//   return res.send({
+//     user: req.user,
+//   })
+// })
+app.use('/draft', authMiddleware, draftRouter)
+app.use('/range', authMiddleware, rangeRouter)
+app.use('/time', authMiddleware, timeRouter)
+app.use('/model', authMiddleware, modelRouter)
+app.use('/vissim', authMiddleware, vissimRouter)
+app.use('/users', authMiddleware, usersRouter)
+app.get('/me', authMiddleware, async (req, res) => {
+  return res.send({ user: req.user })
 })
 
 // catch 404 and forward to error handler

@@ -2,7 +2,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Row } from 'react-bootstrap'
-import { Welcome, Home } from './pages'
+import { Welcome, Home, LoginRedirect } from './pages'
 
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -19,7 +19,8 @@ function App() {
           <AppWrapper>
             <Row className="flex-grow-1 overflow-hidden px-0">
               <Routes className="px-0">
-                <Route path="/" element={<Welcome />} />
+                {/* <Route path="/" element={<Welcome />} /> */}
+                <Route path="/Login" element={<LoginRedirect />} />
                 <Route path="/Home" element={<Home />} />
                 <Route path="/User" element={<UserManagement />} />
                 <Route path="/*" element={<Home />} />
